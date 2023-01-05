@@ -5,8 +5,8 @@ export class Book {
   @Prop({ required: true })
   name: string;
   @Prop()
-  author: number;
-  @Prop()
+  author: string;
+  @Prop({ required: true })
   onLibrary: boolean;
 }
 export const BookSchema = SchemaFactory.createForClass(Book);
