@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateBookDto } from 'src/dto/create-book.dto';
 import { UpdateBookDto } from 'src/dto/update-book.dto';
@@ -36,10 +36,22 @@ export class BookController {
       return response.status(err.status).json(err.response);
     }
   }
-  @Get()
-  async getBooks(@Res() response) {
+  @Put('rent/:id')
+  async rentBook(@Res() response, @Param('id') bookId: string) {
     try {
-      const bookData = await this.bookService.getAllBooks();
+      const existingBook = await this.bookService.rentBook(bookId);
+      return response.status(HttpStatus.OK).json({
+        message: 'Book has been successfully rented',
+        existingBook,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+  @Get()
+  async getBooks(@Query('name') name: string, @Res() response) {
+    try {
+      const bookData = await this.bookService.getAllBooks(name);
       return response.status(HttpStatus.OK).json({
         message: 'All books data found successfully',
         bookData,

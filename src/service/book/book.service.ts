@@ -13,14 +13,34 @@ export class BookService {
     return newBook.save();
   }
   async updateBook(bookId: string, updateBookDto: UpdateBookDto): Promise<IBook> {
-    const existingBook = await this.bookModel.findByIdAndUpdate(bookId, updateBookDto, { new: true });
+    let query = this.bookModel.findByIdAndUpdate(bookId, updateBookDto, { new: true });
+    if (updateBookDto.name || updateBookDto.author) {
+      query = query.where({ onLibrary: true });
+    }
+    const existingBook = await query;
     if (!existingBook) {
-      throw new NotFoundException(`Book #${bookId} not found`);
+      throw new NotFoundException(`Book #${bookId} not found or can't updated!`);
     }
     return existingBook;
   }
-  async getAllBooks(): Promise<IBook[]> {
-    const bookData = await this.bookModel.find();
+
+  async rentBook(bookId: string): Promise<IBook> {
+    const existingBook = await this.bookModel
+      .findByIdAndUpdate(bookId, { onLibrary: false }, { new: false })
+      .where({ onLibrary: true });
+
+    if (!existingBook) {
+      throw new NotFoundException(`Book #${bookId} not found on library!`);
+    }
+    return existingBook;
+  }
+
+  async getAllBooks(name?: string): Promise<IBook[]> {
+    let query = this.bookModel.find();
+    if (name) {
+      query = query.where({ name: { $regex: name } });
+    }
+    const bookData = await query;
     if (!bookData || bookData.length == 0) {
       throw new NotFoundException('Books data not found!');
     }
@@ -34,9 +54,9 @@ export class BookService {
     return existingBook;
   }
   async deleteBook(bookId: string): Promise<IBook> {
-    const deletedBook = await this.bookModel.findByIdAndDelete(bookId);
+    const deletedBook = await this.bookModel.findByIdAndDelete(bookId).where({ onLibrary: true });
     if (!deletedBook) {
-      throw new NotFoundException(`Book #${bookId} not found`);
+      throw new NotFoundException(`Book #${bookId} not found or can't deleted!`);
     }
     return deletedBook;
   }
