@@ -6,7 +6,7 @@ import { BookSchema } from './schemas/book.schema';
 import { BookService } from './service/book/book.service';
 import { BookController } from './controller/book/book.controller';
 import { UserSchema } from './schemas/user.schema';
-import { UsersService } from './service/users/users.service';
+import { UsersService } from './service/users/users.Service';
 import { AuthModule } from './auth/auth.module';
 import { UsersController } from './controller/users/users.controller';
 

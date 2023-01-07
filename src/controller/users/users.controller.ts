@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from 'src/dto/create-user.dto';
 import { User } from 'src/schemas/user.schema';
-import { UsersService } from 'src/service/users/users.service';
+import { UsersService } from 'src/service/users/users.Service';
 
 @Controller('auth')
 export class UsersController {
