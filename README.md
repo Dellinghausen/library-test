@@ -36,4 +36,10 @@ $ yarn start # execute the start script in package.json, start the project
 # watch mode
 
 $ yarn start:dev # execute the project in watch mode
+
+
+## to use api
+
+import collection in postman.collection folder
+
 ```
